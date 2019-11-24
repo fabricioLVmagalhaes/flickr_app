@@ -7,9 +7,10 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
+private const val TAG = "MainActivityLog"
+
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "MainActivityLog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate called")
