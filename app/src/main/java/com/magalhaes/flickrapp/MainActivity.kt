@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 private const val TAG = "MainActivityLog"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val getRawData = GetRawData()
+        val getRawData = GetRawData(this)
+//        getRawData.setDownloadCompleteListener(this)
         getRawData.execute("https://www.flickr.com/services/feeds/photos_public.gne?tags=android,oreo&format=json&nojsoncallback=1")
 
 //        fab.setOnClickListener { view ->
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onDownloadCompleted(data: String, status: DownloadStatus) {
+    override fun onDownloadCompleted(data: String, status: DownloadStatus) {
         if (status == DownloadStatus.OK) {
             Log.d(TAG, "onDownloadComplete called, data is $data")
         } else {

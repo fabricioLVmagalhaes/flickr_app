@@ -12,11 +12,22 @@ enum class DownloadStatus {
 
 private const val TAG = "GetRawData"
 
-class GetRawData : AsyncTask<String, Void, String>() {
+class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, Void, String>() {
     private var dowloadStatus = DownloadStatus.IDLE
 
-    override fun onPostExecute(result: String?) {
+    interface OnDownloadComplete {
+        fun onDownloadCompleted(data: String, status: DownloadStatus)
+    }
+
+//    private var listener: MainActivity? = null
+//
+//    fun setDownloadCompleteListener(callbackObject: MainActivity) {
+//        listener = callbackObject
+//    }
+
+    override fun onPostExecute(result: String) {
         Log.d(TAG, "onPostExecute called, parameter is $result")
+        listener.onDownloadCompleted(result, dowloadStatus)
     }
 
     override fun doInBackground(vararg params: String?): String {
