@@ -48,6 +48,7 @@ class GetFlickrJsonData(private val listener: OnDataAvailable) : AsyncTask<Strin
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "doInBackground: Error processing Json data.")
+            cancel(true)
             listener.onError(e)
         }
 
