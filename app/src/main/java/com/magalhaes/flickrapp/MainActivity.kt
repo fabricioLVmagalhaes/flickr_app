@@ -1,16 +1,17 @@
 package com.magalhaes.flickrapp
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Exception
 
 private const val TAG = "MainActivityLog"
 
-class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetFlickrJsonData.OnDataAvailable {
+class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
+    GetFlickrJsonData.OnDataAvailable {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,12 +20,36 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetFlic
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+
+        val url = createUri(
+            "https://www.flickr.com/services/feeds/photos_public.gne",
+            "android,oreo",
+            "en-us",
+            true
+        )
         val getRawData = GetRawData(this)
 
-        getRawData.execute("https://www.flickr.com/services/feeds/photos_public.gne?tags=android,oreo&format=json&nojsoncallback=1")
+        getRawData.execute(url)
 
 
         Log.d(TAG, "onCreate ends")
+    }
+
+    private fun createUri(
+        baseUrl: String,
+        searchCriteria: String,
+        lang: String,
+        matchAll: Boolean
+    ): String {
+        Log.d(TAG, ".createUri starts")
+
+        return Uri.parse(baseUrl)
+            .buildUpon()
+            .appendQueryParameter("tags", searchCriteria)
+            .appendQueryParameter("tagmode", if (matchAll) "ALL" else "ANY")
+            .appendQueryParameter("lang", lang)
+            .appendQueryParameter("format", "json").appendQueryParameter("nojsoncallback", "1")
+            .build().toString()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
