@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 private const val TAG = "FlickrRecyclerViewAdapt"
 
@@ -38,7 +39,15 @@ class FlickrRecyclerViewAdpter(private var photoList : List<Photo>) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: FlickrImageViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // called by the layout manager when it wants new data in an existing view
+
+        val photoItem = photoList[position]
+        Log.d(TAG, ".onBindingViewHolder: ${photoItem.title} --> $position")
+        Picasso.with(holder.thumbnail.context).load(photoItem.image)
+            .error(R.drawable.placeholder)
+            .placeholder(R.drawable.placeholder)
+            .into(holder.thumbnail)
+        holder.title.text = photoItem.title
     }
 
 }
