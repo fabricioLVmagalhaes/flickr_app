@@ -10,13 +10,12 @@ enum class DownloadStatus {
     OK, IDLE, NOT_INITIALISED, FAILED_OR_EMPTY, PERMISSIONS_ERROR, ERROR
 }
 
-private const val TAG = "GetRawData"
-
 class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, Void, String>() {
-    private var dowloadStatus = DownloadStatus.IDLE
+    private val TAG = "GetRawData"
+    private var downloadStatus = DownloadStatus.IDLE
 
     interface OnDownloadComplete {
-        fun onDownloadCompleted(data: String, status: DownloadStatus)
+        fun onDownloadComplete(data: String, status: DownloadStatus)
     }
 
 //    private var listener: MainActivity? = null
@@ -27,30 +26,34 @@ class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, V
 
     override fun onPostExecute(result: String) {
         Log.d(TAG, "onPostExecute called")
-        listener.onDownloadCompleted(result, dowloadStatus)
+        listener.onDownloadComplete(result, downloadStatus)
     }
 
     override fun doInBackground(vararg params: String?): String {
         if (params[0] == null) {
-            dowloadStatus = DownloadStatus.NOT_INITIALISED
+            downloadStatus = DownloadStatus.NOT_INITIALISED
             return "No URL specified"
         }
 
         try {
-            dowloadStatus = DownloadStatus.OK
+            downloadStatus = DownloadStatus.OK
             return URL(params[0]).readText()
         } catch (e: Exception) {
             val errorMessage = when (e) {
                 is MalformedURLException -> {
-                    dowloadStatus = DownloadStatus.NOT_INITIALISED
-                    "doInbackground: Invalid URL ${e.message}"
+                    downloadStatus = DownloadStatus.NOT_INITIALISED
+                    "doInBackground: Invalid URL ${e.message}"
                 }
                 is IOException -> {
-                    dowloadStatus = DownloadStatus.NOT_INITIALISED
-                    "doInbackground: Security exception: Needs permission? ${e.message}"
+                    downloadStatus = DownloadStatus.FAILED_OR_EMPTY
+                    "doInBackground: IO Exception reading data: ${e.message}"
+                }
+                is SecurityException -> {
+                    downloadStatus = DownloadStatus.PERMISSIONS_ERROR
+                    "doInBackground: Security exception: Needs permission? ${e.message}"
                 }
                 else -> {
-                    dowloadStatus = DownloadStatus.ERROR
+                    downloadStatus = DownloadStatus.ERROR
                     "Unknown error: ${e.message}"
                 }
             }
