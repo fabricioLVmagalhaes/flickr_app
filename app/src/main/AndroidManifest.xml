@@ -21,7 +21,7 @@
                 android:value="com.magalhaes.flickrapp.MainActivity" />
         </activity>
         <activity
-            android:name=".SearchAcitivity"
+            android:name=".SearchActivity"
             android:label="@string/title_activity_search_acitivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
