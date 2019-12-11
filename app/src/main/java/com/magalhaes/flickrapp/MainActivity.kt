@@ -16,7 +16,7 @@ private const val TAG = "MainActivityLog"
 class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
     GetFlickrJsonData.OnDataAvailable,
     RecyclerItemClickListener.OnRecyclerClickListener {
-    private val TAG = "MainActivity"
+
     private val flickrRecyclerViewAdapter = FlickrRecyclerViewAdapter(ArrayList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,4 +118,8 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
         Log.e(TAG, "onError called with ${exception.message}")
     }
 
+    override fun onResume() {
+        Log.d(TAG, ".onResume starts")
+        super.onResume()
+    }
 }
