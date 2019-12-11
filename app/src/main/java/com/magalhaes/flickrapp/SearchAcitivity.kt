@@ -3,6 +3,7 @@ package com.magalhaes.flickrapp
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
@@ -32,8 +33,13 @@ class SearchActivity : BaseActivity() {
         searchView?.isIconified = false
 
         searchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
+            override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(TAG, ".onQueryTextSubmit: called")
+
+                val sharePref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                sharePref.edit().putString(FLICKER_QUERY, query).apply()
+                searchView?.clearFocus()
+
                 finish()
                 return true
             }
@@ -43,6 +49,11 @@ class SearchActivity : BaseActivity() {
                 return false
             }
         })
+
+        searchView?.setOnCloseListener {
+            finish()
+            false
+        }
 
         return true
     }
